@@ -6,8 +6,23 @@
 
 <?php
     
-    
-    if(isset($_GET['delete'])){
+    if(isset($_GET['search']) && isset($_GET['page'])){
+        
+            
+        $search = $_GET['search'];
+        $search = clean($search);
+
+        
+        $page = $_GET['page'];
+        $page = clean($page);
+
+        
+      
+        $results = searchUsersPerPage($search,$page);
+        $pages = getSearchUserPageCount($search);
+       // $results = getPage("users",$page);
+        
+    }elseif(isset($_GET['delete'])){
         $id=$_GET['delete'];
         $query = "DELETE FROM users WHERE id=$id";
         $stmt = mysqli_prepare($conn,$query);
@@ -24,17 +39,22 @@
         $page = $_GET['page'];
         //TODO test for validity of page number
         $results = getPage("users",$page);
+        $pages = getPageCount("users");
         
     }
-    elseif(isset($_POST['search'])){
+    elseif(isset($_GET['search'])){
         
-        $search = $_POST['search'];
+        $search = $_GET['search'];
         $search = clean($search);
         
         echo "search: $search<br>";
      
         //TODO test for validity of page number
-        $results = searchUsers($search);
+       // $results = searchUsers($search);
+        $results = searchUsersPerPage($search, 1);
+        
+        $pages = getSearchUserPageCount($search);
+        $page=1;
         
     }
 else{
@@ -42,6 +62,8 @@ else{
         
         
         $results = getPage("users",1);
+        $pages = getPageCount("users");
+        $page=1;
         
 //        $query = "SELECT * FROM users";
 //        $stmt = mysqli_prepare($conn, $query);
@@ -61,26 +83,19 @@ else{
 ?>
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
+<?php include "header.php" ?>
     
     
-    <form action="" method="post">
-        <div>
-            <label for="search"></label>
+    <form action="" method="get">
+        <div class="input-group" >
             <input type="text" name="search" id="search">
-            <input type="submit" name="searchSubmit" value="Search">
+            <input type="submit" name="searchSubmit" value="Search" class="btn btn-primary input-group-append">
         </div>
     </form>
     
     <?php include "pagination.php" ?>
     
-    <table>
+    <table class="table table-bordered table-hover">
         <thead>
             <td>Id</td>
             <td>Name</td>
@@ -107,8 +122,8 @@ else{
                 echo "<td>{$row['salary']}</td>";
                 echo "<td>{$row['department']}</td>";
                 echo "<td>{$row['home_address']}</td>";
-                echo "<td><a href='edit_form.php?edit=$id'>Edit</a></td>";
-                echo "<td><a href='?delete=$id'>Delete</a></td>";
+                echo "<td><a href='edit_form.php?edit=$id' class='btn btn-secondary btn-sm'>Edit</a></td>";
+                echo "<td><a href='?delete=$id' class='btn btn-danger btn-sm' >Delete</a></td>";
                 
             echo "</tr>";
         }
@@ -139,6 +154,5 @@ else{
     </table>
     
     <?php include "pagination.php" ?>
-    
-</body>
-</html>
+    <?php include "footer.php" ?>
+

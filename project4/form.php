@@ -22,9 +22,9 @@ if(isset($_POST['submit'])){
 
     
     if(empty($name))
-        $NameError = "Name can't be empty!";
+        $nameError = "Name can't be empty!";
     elseif(!preg_match("/^[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*$/",$name))
-        $NameError = "Only letters and spaces allowed!";
+        $nameError = "Only letters and spaces allowed!";
     
     if(empty($ssn))
         $ssnError = "SSN can't be empty!";
@@ -105,72 +105,67 @@ if(isset($_POST['submit'])){
 
 ?>
 
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>First Form</title>
-</head>
-
-<style type="text/css">
-    
-
-    input[type=text],
-    input[type=email],
-    input[type=number],
-    textarea {
-        border: 1 px solid_dashed;
-        background-color: burlywood;
-        width: 30%;
-        padding: .5em;
-        font-size: 1.0em;
-    }
-    
-    .error 
-    {
-        color:red;
-/*        background-color: red;*/
-    }
-    
-</style>
-
+<?php include "header.php" ?>
 
 <body>
    
-   <form action="" method="post">
+   <form action="" method="post" novalidate>
      <legend>* Must fill in these values</legend>
       <fieldset>
-       <div>
+       <div class="form-group">
            <label for="name">Name:</label>
-           <input type="text" id="name" name="name" required pattern="[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*" title="two or more names with minimum 3 chars each">
-          <p class="error">*<?php echo $nameError;?></p>
+           <input type="text" id="name" name="name" required pattern="[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*" title="two or more names with minimum 3 chars each"  class="form-control <?php echo empty($nameError)?'is-valid':'is-invalid';?>" value="<?php echo $name; ?>" >
+          <div class="valid-feedback">
+                Looks good!
+          </div>
+          <div class="invalid-feedback">
+            <?php echo $nameError;?>
+          </div>
        </div>
         
-       <div>
+       <div class="form-group">
            <label for="ssn">SSN:</label>
-           <input type="number" id="ssn" name="ssn" required title="6 digit number">
-           <p class="error">*<?php echo $ssnError;?></p>
+           <input type="number" id="ssn" name="ssn" required title="6 digit number"  class="form-control <?php echo empty($ssnError)?'is-valid':'is-invalid';?>"   value="<?php echo $ssn; ?>" >
+        <div class="valid-feedback">
+                Looks good!
+          </div>
+          <div class="invalid-feedback">
+            <?php echo $ssnError;?>
+          </div>
        </div>
 
-       <div>
+       <div class="form-group">
            <label for="department">Department</label>
-           <input type="text" id="department" name="department" required pattern="[a-zA-Z]{3,}" title="a single name more than 3 chars">
-          <p class="error">*<?php echo $departmentError;?></p>
+           <input type="text" id="department" name="department" required pattern="[a-zA-Z]{3,}" title="a single name more than 3 chars"  class="form-control <?php echo empty($departmentError)?'is-valid':'is-invalid';?>" value="<?php echo $department; ?>"  >
+        <div class="valid-feedback">
+                Looks good!
+          </div>
+          <div class="invalid-feedback">
+            <?php echo $departmentError;?>
+          </div>
        </div>
        
-       <div>
+       <div class="form-group">
            <label for="salary">Salary:</label>
-           <input type="number" id="salary" name="salary" required>
-           <p class="error">*<?php echo $salaryError;?></p>
+           <input type="number" id="salary" name="salary" required  class="form-control <?php echo empty($salaryError)?'is-valid':'is-invalid';?>" value="<?php echo $salary; ?>"  >
+            <div class="valid-feedback">
+                Looks good!
+          </div>
+          <div class="invalid-feedback">
+            <?php echo $salaryError;?>
+          </div>
        </div>
                      
 
-       <div>
+       <div class="form-group">
            <label for="homeaddress">Home Address:</label>
-           <input type="text" id="homeaddress" name="homeaddress" required pattern="[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*" title="two or more words separated by spaces">
-          <p class="error">*<?php echo $homeaddressError;?></p>
+           <input type="text" id="homeaddress" name="homeaddress" required pattern="[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*" title="two or more words separated by spaces"   class="form-control <?php echo empty($homeaddressError)?'is-valid':'is-invalid';?>"  value="<?php echo $homeaddress; ?>" >
+                    <div class="valid-feedback">
+                Looks good!
+          </div>
+          <div class="invalid-feedback">
+            <?php echo $homeaddressError;?>
+          </div>
        </div>
 
                                                                                   
@@ -179,7 +174,7 @@ if(isset($_POST['submit'])){
                                                                                   
                                                                                    
         <div>
-            <input type="submit" name="submit" Value="Submit">
+            <input type="submit" name="submit" Value="Submit" class="btn btn-primary">
         </div>                                                     
                                                                                     
        </fieldset>
@@ -187,5 +182,4 @@ if(isset($_POST['submit'])){
        
    </form>
     
-</body>
-</html>
+<?php include "footer.php" ?>

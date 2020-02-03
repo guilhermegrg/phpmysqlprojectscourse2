@@ -114,76 +114,46 @@ elseif(isset($_GET['edit'])){
 
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>First Form</title>
-</head>
-
-<style type="text/css">
-    
-
-    input[type=text],
-    input[type=email],
-    input[type=number],
-    textarea {
-        border: 1 px solid_dashed;
-        background-color: burlywood;
-        width: 30%;
-        padding: .5em;
-        font-size: 1.0em;
-    }
-    
-    .error 
-    {
-        color:red;
-/*        background-color: red;*/
-    }
-    
-</style>
-
-
-<body>
+<?php include "header.php" ?>
    
-   <form action="" method="post">
+   <form action="" method="post" >
      <legend>* Must fill in these values</legend>
       <fieldset>
       
-       <div>
-           <label for="name">Id:</label>
-           <input type="text" id="id" name="id" value="<?php echo $id?>" readonly>
+       <div class="form-group">
+           <label for="name" class="form-check-label"  >Id:</label>
+           <input type="text" id="id" name="id" value="<?php echo $id?>" readonly  class="form-control" >
        </div>
       
       
-       <div>
-           <label for="name">Name:</label>
-           <input type="text" id="name" name="name" required pattern="[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*" title="two or more names with minimum 3 chars each" value="<?php echo $name?>">
+       <div class="form-group">
+           <label for="name" >Name:</label>
+           <input type="text" id="name" name="name" required pattern="[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*" title="two or more names with minimum 3 chars each" value="<?php echo $name?>"  class="form-control" >
           <p class="error">*<?php echo $nameError;?></p>
        </div>
         
-       <div>
+       <div class="form-group">
            <label for="ssn">SSN:</label>
-           <input type="number" id="ssn" name="ssn" required title="6 digit number" value="<?php echo $ssn?>">
+           <input type="number" id="ssn" name="ssn" required title="6 digit number" value="<?php echo $ssn?>"  class="form-control" >
            <p class="error">*<?php echo $ssnError;?></p>
        </div>
 
-       <div>
+       <div class="form-group">
            <label for="department">Department</label>
-           <input type="text" id="department" name="department" required pattern="[a-zA-Z]{3,}" title="a single name more than 3 chars"  value="<?php echo $department?>">
+           <input type="text" id="department" name="department" required pattern="[a-zA-Z]{3,}" title="a single name more than 3 chars"  value="<?php echo $department?>"  class="form-control" >
           <p class="error">*<?php echo $departmentError;?></p>
        </div>
        
-       <div>
+       <div class="form-group">
            <label for="salary">Salary:</label>
-           <input type="number" id="salary" name="salary" required  value="<?php echo $salary?>">
+           <input type="number" id="salary" name="salary" required  value="<?php echo $salary?>"  class="form-control" >
            <p class="error">*<?php echo $salaryError;?></p>
        </div>
                      
 
-       <div>
+       <div class="form-group">
            <label for="homeaddress">Home Address:</label>
-           <input type="text" id="homeaddress" name="homeaddress" required pattern="[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*" title="two or more words separated by spaces"  value="<?php echo $homeAddress?>">
+           <input type="text" id="homeaddress" name="homeaddress" required pattern="[a-zA-Z]{3,}[ ]+[a-zA-Z]{3,}([ ]+[a-zA-Z]{3,})*" title="two or more words separated by spaces"  value="<?php echo $homeAddress?>"  class="form-control" >
           <p class="error">*<?php echo $homeaddressError;?></p>
        </div>
 
@@ -192,8 +162,8 @@ elseif(isset($_GET['edit'])){
 
                                                                                   
                                                                                    
-        <div>
-            <input type="submit" name="submit" Value="Submit">
+        <div class="form-group">
+            <input type="submit" name="submit" Value="Submit" class="btn btn-primary">
         </div>                                                     
                                                                                     
        </fieldset>
@@ -201,5 +171,4 @@ elseif(isset($_GET['edit'])){
        
    </form>
     
-</body>
-</html>
+<?php include "footer.php" ?>

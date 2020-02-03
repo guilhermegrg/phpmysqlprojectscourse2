@@ -3,7 +3,7 @@
 
 <?php
     
-    $pages = getPageCount("users");
+//    $pages = getPageCount("users");
 //    echo $pages;
     
     ?>
@@ -21,8 +21,16 @@
       
        <?php
         for($i=1;$i<=$pages;++$i){
-       
-            echo "<a href='?page=$i'>$i</a>";
+            
+            $class = "btn btn-light";
+            if( $page == $i)
+                $class = "btn btn-secondary";
+                
+            
+        if(isset($_GET['search']))
+            echo "<a href='?search={$_GET['search']}&page=$i' class='$class' >$i</a>";
+        else
+            echo "<a href='?page=$i'  class='$class' >$i</a>";
             
         } 
        ?>
