@@ -109,6 +109,8 @@ if(isset($_POST['submit'])){
 
 <body>
    
+   
+   <div class="form">
    <form action="" method="post" novalidate>
      <legend>* Must fill in these values</legend>
       <fieldset>
@@ -181,5 +183,7 @@ if(isset($_POST['submit'])){
        
        
    </form>
+   
+</div>   
     
 <?php include "footer.php" ?>
