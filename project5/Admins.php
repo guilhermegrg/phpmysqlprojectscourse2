@@ -10,7 +10,7 @@ if(isset($_POST['submit'])){
     $name = $_POST['name'];
     
     
-    
+    $admin = getAdminUsername();
     
     
     if(empty($username) || empty($email) ||empty($password) ||empty($confirm_password) ){
@@ -40,9 +40,13 @@ if(isset($_POST['submit'])){
         setError("Password and confirmation are not equal!");
         send("Admins.php");
         
+    }elseif(!$admin){
+        setError("Invalid author! Are you logged in?");
+        send("Admins.php");
+        
     }else{//insert new category
         
-        $admin = "Guilhasgrg"; //dummy value
+          //dummy value
 //        $time = now();//date_format(time(), 'Y-m-d H:i:s');
 //        date_default_timezone_set("Europe/Lisbon");
 //        $time = date('Y-m-d H:i:s');

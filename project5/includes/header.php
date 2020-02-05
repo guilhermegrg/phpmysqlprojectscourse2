@@ -1,6 +1,7 @@
 <?php require_once("db.php"); ?>
 <?php require_once("sessions.php"); ?>
-
+<?php setTrackingURL(); ?>
+<?php confirmLogin(); ?>
 
 <!DOCTYPE html>
 <html lang="en">

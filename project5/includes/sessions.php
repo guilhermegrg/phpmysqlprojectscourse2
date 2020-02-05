@@ -4,12 +4,16 @@
 session_start();
 
 
+function setSessionValue($key,$value){
+   $_SESSION[$key] = $value; 
+}
+
 function setError($text){
-   $_SESSION['ErrorMessage'] = $text; 
+   setSessionValue('ErrorMessage',$text); 
 }
 
 function setSuccess($text){
-   $_SESSION['SuccessMessage'] = $text; 
+   setSessionValue('SuccessMessage',$text); 
 }
 
 
@@ -35,6 +39,50 @@ function showMessages(){
     echo getErrorMessage();
     echo getSuccessMessage();
 }
+
+function setAdminSessionData($username, $name, $id){
+    
+    setSessionValue('ADMIN_ID',$id);
+ setSessionValue('ADMIN_USERNAME',$username);
+ setSessionValue('ADMIN_NAME',$name);
+             
+}
+
+function getAdminName(){
+    return $_SESSION['ADMIN_NAME'];
+}
+function getAdminUsername(){
+    return $_SESSION['ADMIN_USERNAME'];
+}
+
+
+function getAdminId(){
+    if(isset($_SESSION['ADMIN_ID']))
+    return $_SESSION['ADMIN_ID'];
+    else
+        return 0;
+}
+
+
+function confirmLogin(){
+    if(isset($_SESSION['ADMIN_ID']))
+        return true;
+    else{
+        setError("Login Required!");
+        send("Login.php");
+    }  
+}
+
+function getTrackingURL(){
+    return $_SESSION['TRACKING_URL'];
+}
+
+function setTrackingURL(){
+        $_SESSION['TRACKING_URL'] = $_SERVER['PHP_SELF'];
+}
+
+
+
 
 ?>
 

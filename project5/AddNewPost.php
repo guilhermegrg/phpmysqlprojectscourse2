@@ -6,7 +6,7 @@ if(isset($_POST['submit'])){
     
     $title = $_POST['title'];
     
-    $author_id=1; //dummy value
+    $author_id=getAdminId(); 
     $cat_id = $_POST['category'];
     $content = $_POST['content'];
     

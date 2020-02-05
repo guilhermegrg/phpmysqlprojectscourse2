@@ -6,7 +6,7 @@ if(isset($_POST['submit'])){
     $title = $_POST['title'];
     
     
-    
+    $admin = getAdminUsername(); 
     
     
     if(empty($title)){
@@ -20,9 +20,12 @@ if(isset($_POST['submit'])){
         setError("Category title must be less than 50 chars!");
         send("categories.php");
         
+    }    elseif(!$admin){
+        setError("Invalid author! Are you logged in?");
+        send("categories.php");
     }else{//insert new category
         
-        $admin = "Guilhasgrg"; //dummy value
+        $admin = getAdminUsername(); 
 //        $time = now();//date_format(time(), 'Y-m-d H:i:s');
         date_default_timezone_set("Europe/Lisbon");
         $time = date('Y-m-d H:i:s');

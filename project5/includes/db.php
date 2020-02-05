@@ -15,10 +15,12 @@ function getCategories(){
     $stmt = $conn->prepare("SELECT * FROM category");
     $result = $stmt->execute();
     if($result){
+        $count = 0;
         while ($row = $stmt->fetch()){
             $id = $row['id'];
             $name = $row['name'];
             $array[$id] = $name;
+            ++$count;
         }
         
         if($count==0)
@@ -32,6 +34,9 @@ function getCategories(){
     }
     
 }
+
+//getCategories();
+
 
 function getPosts(){
     
@@ -223,6 +228,28 @@ function isEmailTaken($username){
 }
 
 
+function getAdminByUsername($username){
+    global $conn;
+    $query = "SELECT * FROM admins WHERE username=:username";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue("username", $username);
+    
+    $results = $stmt->execute();
+    $count = $stmt->rowCount();
+    if($results){
+        if($count == 0)
+            return null;
+        
+        $row = $stmt->fetch();
+        return $row;
+        
+    }else{
+        die("Error fetching admins! " . $conn->errorInfo()[0]);
+    }
+        
+}
+
 //isUsernameTaken("gui");
 
 //postComment("gui", "guigrg@gmail.com","asdasd asda sdasd a", 2);
@@ -239,5 +266,6 @@ function isEmailTaken($username){
 //foreach($cats as $id => $name){
 // echo "<h1>" . $name . "</h1><br>";
 //}
+
 
 ?>

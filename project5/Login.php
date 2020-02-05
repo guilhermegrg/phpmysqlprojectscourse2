@@ -1,5 +1,63 @@
 <?php include "includes/public_header.php" ?>
-<!--    header-->
+<?php
+    
+    if(getAdminId())
+        send("Dashboard.php");
+    ?>
+<?php
+
+    if(isset($_POST['submit'])){
+        
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        
+      if(empty($username) || empty($password)){
+        setError("All fields must be filled!");
+        send("Login.php");
+    }elseif(strlen($username)<=2){
+        setError("Username must be more than 2 chars!");
+        send("Login.php");
+        
+    }
+        
+     $row = getAdminByUsername($username);
+     if($row){
+        
+         $password_hash = $row['password'];
+         if(password_verify($password,$password_hash)){
+             //loginUser();
+             
+             $id = $row['id'];
+             $name = $row['name'];
+             
+           setAdminSessionData($username,$name,$id);
+             
+            setSuccess("Welcome back $username!");
+             
+             if(getTrackingURL())
+                send(getTrackingURL());
+             else
+                 send("Dashboard.php");
+             
+             
+             
+         }else{
+             setError("Username/Password incorrect!");
+        send("Login.php");
+         }
+         
+     }else
+     {
+        setError("Username/Password incorrect!");
+        send("Login.php");
+     }
+        
+    }
+    
+    
+?>
+ 
+ <!--    header-->
   <header class="bg-dark text-white py-3">
    <div class="container">
        <div class="row">
