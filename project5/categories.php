@@ -95,6 +95,55 @@ if(isset($_POST['submit'])){
             </form>
             
             
+             <h1>Existing Categories</h1>
+<table class="table table-hover table-striped ">
+    <thead class="thead-dark">
+        <th>ID</th>
+        <th>Date</th>
+        
+        <th>Name</th>
+        <th>Author</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        <?php
+            $categories = getCategories();
+//            var_dump($categories);
+            foreach($categories as $key=>$value){
+                $cat = $value;
+                
+//                var_dump($cat);
+                
+                $id = $cat['id'];
+                $name = $cat['name'];
+                $time = $cat['time'];
+                $author = $cat['author'];
+                
+                if(strlen($name)>18)
+                    $name = substr($name,0,18)."..";
+                
+                if(strlen($time)>18)
+                    $time = substr($time,0,18)."..";
+                
+                if(strlen($author)>18)
+                    $author = substr($author,0,18)."..";
+                
+                echo "<tr>";
+                echo "<td>$id</td>";
+                echo "<td>$time</td>";
+                echo "<td class='table-primary'>$name</td>";
+                echo "<td>$author</td>";
+                echo "<td><a href='DeleteCategory.php?id=$id' class='btn btn-danger btn-sm '>Delete</a></td>";
+
+                echo "</tr>";
+            }
+    
+    
+    
+        ?>
+    </tbody>
+</table>
+            
         </div>
     </div>
     

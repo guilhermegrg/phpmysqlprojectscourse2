@@ -17,9 +17,7 @@ function getCategories(){
     if($result){
         $count = 0;
         while ($row = $stmt->fetch()){
-            $id = $row['id'];
-            $name = $row['name'];
-            $array[$id] = $name;
+           $array[$count] = $row;
             ++$count;
         }
         
@@ -194,6 +192,88 @@ function getPublishedCommentsFromPost($post_id){
 }
 
 
+function getAllComments(){
+    global $conn;
+    $query = "SELECT * FROM comments ORDER BY id DESC";
+    
+    $stmt = $conn->prepare($query);
+    //$stmt->bindValue("post_id", $post_id);
+    
+    $results = $stmt->execute();
+    
+    if($results){
+        $count = 0;
+        while($row = $stmt->fetch()){
+            $array[$count] = $row;
+            ++$count;
+        }
+        
+        if($count==0)
+            return [];
+        
+        return $array;
+        
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+}
+
+function getAllPublishedComments(){
+    global $conn;
+    $query = "SELECT * FROM comments WHERE status='on' ORDER BY id DESC";
+    
+    $stmt = $conn->prepare($query);
+    //$stmt->bindValue("post_id", $post_id);
+    
+    $results = $stmt->execute();
+    
+    if($results){
+        $count = 0;
+        while($row = $stmt->fetch()){
+            $array[$count] = $row;
+            ++$count;
+        }
+        
+        if($count==0)
+            return [];
+        
+        return $array;
+        
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+}
+
+function getAllDisapprovedComments(){
+    global $conn;
+    $query = "SELECT * FROM comments WHERE status='off' ORDER BY id DESC";
+    
+    $stmt = $conn->prepare($query);
+    //$stmt->bindValue("post_id", $post_id);
+    
+    $results = $stmt->execute();
+    
+    if($results){
+        $count = 0;
+        while($row = $stmt->fetch()){
+            $array[$count] = $row;
+            ++$count;
+        }
+        
+        if($count==0)
+            return [];
+        
+        return $array;
+        
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+}
+
+
 function isFieldValueTaken($table,$fieldname,$fieldvalue){
      global $conn;
     $query = "SELECT * FROM $table WHERE $fieldname=:value";
@@ -248,6 +328,67 @@ function getAdminByUsername($username){
         die("Error fetching admins! " . $conn->errorInfo()[0]);
     }
         
+}
+
+
+function getAdmins(){
+    global $conn;
+    $query = "SELECT * FROM admins";
+    
+    $stmt = $conn->prepare($query);
+//    $stmt->bindValue("username", $username);
+    
+    $results = $stmt->execute();
+    $count = $stmt->rowCount();
+    if($results){
+        $count = 0;
+        while($row = $stmt->fetch()){
+            $array[$count] = $row;
+            ++$count;
+        }
+        
+        if($count==0)
+            return [];
+        
+        return $array;
+        
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+        
+}
+
+function approveComment($id){
+    global $conn;
+    $query = "UPDATE comments SET status='on', approvedby=:username WHERE id=:id";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue("id", $id);
+    $stmt->bindValue("username", getAdminUsername());
+
+    
+    $results = $stmt->execute();
+}
+
+
+function disapproveComment($id){
+    global $conn;
+    $query = "UPDATE comments SET status='off' WHERE id=:id";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue("id", $id);
+    
+    $results = $stmt->execute();
+}
+
+function deleteComment($id){
+    global $conn;
+    $query = "DELETE FROM comments WHERE id=:id";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue("id", $id);
+    
+    $results = $stmt->execute();
 }
 
 //isUsernameTaken("gui");

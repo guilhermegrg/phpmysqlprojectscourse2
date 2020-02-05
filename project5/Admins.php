@@ -145,6 +145,62 @@ if(isset($_POST['submit'])){
             </form>
             
             
+            <h1>Existing Admins</h1>
+<table class="table table-hover table-striped ">
+    <thead class="thead-dark">
+        <th>ID</th>
+        <th>Date</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Added By</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        <?php
+            $admins = getAdmins();
+//            var_dump($categories);
+            foreach($admins as $key=>$value){
+                $admin = $value;
+                
+//                var_dump($cat);
+                
+                $id = $admin['id'];
+                $username = $admin['username'];
+                $time = $admin['time'];
+                $email = $admin['email'];
+                $name = $admin['name'];
+                $addedby = $admin['addedby'];
+                
+                if(strlen($username)>18)
+                    $username = substr($username,0,18)."..";
+                
+                if(strlen($time)>18)
+                    $time = substr($time,0,18)."..";
+                
+                if(strlen($addedby)>18)
+                    $addedby = substr($addedby,0,18)."..";
+                
+                if(isset($admin['name']) && strlen($name)>18)
+                    $name = substr($name,0,18)."..";
+                
+                echo "<tr>";
+                echo "<td>$id</td>";
+                echo "<td>$time</td>";
+                echo "<td class='table-primary'>$username</td>";
+                echo "<td>$email</td>";
+                echo "<td>$name</td>";
+                echo "<td>$addedby</td>";
+                echo "<td><a href='DeleteAdmin.php?id=$id' class='btn btn-danger btn-sm '>Delete</a></td>";
+                echo "</tr>";
+            }
+    
+    
+    
+        ?>
+    </tbody>
+</table>
+            
         </div>
     </div>
     
