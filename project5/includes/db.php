@@ -21,6 +21,9 @@ function getCategories(){
             $array[$id] = $name;
         }
         
+        if($count==0)
+            return [];
+        
         return $array;
         
     }else
@@ -41,6 +44,9 @@ function getPosts(){
             $array[$count] = $row;
             ++$count;
         }
+        
+        if($count==0)
+            return [];
         
         return $array;
         
@@ -67,6 +73,10 @@ function searchPosts($query){
             ++$count;
         }
         
+        
+        if($count==0)
+            return [];
+        
         return $array;
         
     }else{
@@ -89,6 +99,10 @@ function getPostById($id){
             ++$count;
         }
         
+        
+        if($count==0)
+            return [];
+        
         return $array;
         
     }else{
@@ -97,6 +111,121 @@ function getPostById($id){
     
 }
 
+
+
+function postComment($name, $email, $message, $post_id){
+    global $conn;
+    $query = "INSERT INTO comments (name, email, message, time, post_id, approvedby, status) VALUES(:name, :email, :message, now(), :post_id, 'pending','off')";
+    
+    $stmt = $conn->prepare($query);
+    
+    $stmt->bindValue("name", $name);
+    $stmt->bindValue("email", $email);
+    $stmt->bindValue("message", $message);
+    $stmt->bindValue("post_id", $post_id);
+    
+    $result = $stmt->execute();
+    $id = $conn->lastInsertId();
+    
+    if($result && $id >0 ){
+       return $id;
+    }else
+        return -1;
+    
+}
+
+function getAllCommentsFromPost($post_id){
+    global $conn;
+    $query = "SELECT * FROM comments WHERE post_id=:post_id";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue("post_id", $post_id);
+    
+    $results = $stmt->execute();
+    
+    if($results){
+        $count = 0;
+        while($row = $stmt->fetch()){
+            $array[$count] = $row;
+            ++$count;
+        }
+        
+        if($count==0)
+            return [];
+        
+        return $array;
+        
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+}
+
+function getPublishedCommentsFromPost($post_id){
+    global $conn;
+    $query = "SELECT * FROM comments WHERE post_id=:post_id AND status='on' ";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue("post_id", $post_id);
+    
+    $results = $stmt->execute();
+    
+    if($results){
+        $count = 0;
+        while($row = $stmt->fetch()){
+            $array[$count] = $row;
+            ++$count;
+        }
+        
+        if($count==0)
+            return [];
+        
+        return $array;
+        
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+}
+
+
+function isFieldValueTaken($table,$fieldname,$fieldvalue){
+     global $conn;
+    $query = "SELECT * FROM $table WHERE $fieldname=:value";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue("value", $fieldvalue);
+    
+    $results = $stmt->execute();
+    $count = $stmt->rowCount();
+    if($results){
+        
+        if($count==0)
+            return false;
+        else
+            return true;
+        
+    }else{
+        die("Error fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+    
+}
+
+function isUsernameTaken($username){
+    return isFieldValueTaken("admins","username",$username);
+    
+}
+
+function isEmailTaken($username){
+    return isFieldValueTaken("admins","email",$username);
+    
+}
+
+
+//isUsernameTaken("gui");
+
+//postComment("gui", "guigrg@gmail.com","asdasd asda sdasd a", 2);
 
 // $posts = searchPosts("z");
 //print_r($posts);
