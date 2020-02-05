@@ -36,10 +36,18 @@ function getCategories(){
 //getCategories();
 
 
-function getPosts(){
+function getPosts($index,$amount){
     
     global $conn;
-    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, cat.name as cat_name, p.time, p.image, p.content FROM posts p LEFT JOIN category cat ON p.category_id=cat.id ORDER BY id DESC");
+    
+//    echo "index: $index items: $amount";
+    
+    if(!isset($index) || !isset($amount))
+        $pagination = "";
+    else
+        $pagination = " LIMIT $index, $amount";
+    
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id LEFT JOIN admins adn ON p.author_id=adn.id  ORDER BY id DESC " .$pagination );
     $results = $stmt->execute();
     if($results){
         $count = 0;
@@ -60,10 +68,85 @@ function getPosts(){
 }
 
 
-function searchPosts($query){
+function getPostsByCategory($cat_id, $index,$amount){
     
     global $conn;
-    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, cat.name as cat_name, p.time, p.image, p.content FROM posts p LEFT JOIN category cat ON p.category_id=cat.id WHERE p.title LIKE :search OR p.content LIKE :search OR cat.name LIKE :search ORDER BY id DESC");
+    
+//    echo "index: $index items: $amount";
+    
+    if(!isset($index) || !isset($amount))
+        $pagination = "";
+    else
+        $pagination = " LIMIT $index, $amount";
+    
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id LEFT JOIN admins adn ON p.author_id=adn.id WHERE p.category_id=:cat_id ORDER BY id DESC " .$pagination );
+    $stmt->bindValue("cat_id",$cat_id);
+    $results = $stmt->execute();
+    if($results){
+        $count = 0;
+        while($row = $stmt->fetch()){
+            $array[$count] = $row;
+            ++$count;
+        }
+        
+        
+        
+        if($count==0)
+            return [];
+        
+        return $array;
+        
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+}
+
+
+//getPostsByCategory(1,1,1);
+//var_dump(getPosts(1,1));
+
+
+function getTopFivePosts(){
+    
+    global $conn;
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
+    LEFT JOIN admins adn ON p.author_id=adn.id 
+    ORDER BY id DESC LIMIT 0, 5");
+    $results = $stmt->execute();
+    if($results){
+        $count = 0;
+        while($row = $stmt->fetch()){
+            $array[$count] = $row;
+            ++$count;
+        }
+        
+        if($count==0)
+            return [];
+        
+        return $array;
+        
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+}
+
+//echo "<pre>" . var_dump(getTopFivePosts()) . "</pre>";
+
+function searchPosts($query, $index,$amount){
+    
+    global $conn;
+    
+    
+    if(!isset($index) || !isset($amount))
+        $pagination = "";
+    else
+        $pagination = " LIMIT $index, $amount";
+    
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
+    LEFT JOIN admins adn ON p.author_id=adn.id WHERE p.title LIKE :search OR p.content LIKE :search OR cat.name LIKE :search ORDER BY id DESC " . $pagination);
+    
     $query = "%".$query."%";
     $stmt->bindValue("search",$query);
 //    $stmt->bindValue("search2",$query);
@@ -89,10 +172,50 @@ function searchPosts($query){
 }
 
 
+function getPostSearchCount($query){
+    
+    global $conn;
+    
+     $stmt = $conn->prepare("SELECT COUNT(*) FROM posts p LEFT JOIN category cat ON p.category_id=cat.id WHERE p.title LIKE :search OR p.content LIKE :search OR cat.name LIKE :search");
+    
+    $query = "%".$query."%";
+    $stmt->bindValue("search",$query);
+    $results = $stmt->execute();
+    
+    if($results){
+        $row = $stmt->fetch();
+        $count = $row[0];
+        return $count;
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+}
+
+function getPostCountByCategory($cat_id){
+    
+    global $conn;
+    
+     $stmt = $conn->prepare("SELECT COUNT(*) FROM posts WHERE category_id=:cat_id");
+    
+    $stmt->bindValue("cat_id",$cat_id);
+    $results = $stmt->execute();
+    
+    if($results){
+        $row = $stmt->fetch();
+        $count = $row[0];
+        return $count;
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+}
+
+//getPostCountByCategory(1);
+
 function getPostById($id){
     
     global $conn;
-    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, cat.name as cat_name, p.category_id, p.time, p.image, p.content FROM posts p LEFT JOIN category cat ON p.category_id=cat.id WHERE p.id=:id ORDER BY id DESC");
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
+    LEFT JOIN admins adn ON p.author_id=adn.id WHERE p.id=:id ORDER BY id DESC");
     $stmt->bindValue("id",$id);
     $results = $stmt->execute();
     if($results){
@@ -391,6 +514,27 @@ function deleteComment($id){
     $results = $stmt->execute();
 }
 
+
+function getCount($table){
+    
+     global $conn;
+    $query = "SELECT COUNT(*) FROM $table";
+    
+    $stmt = $conn->prepare($query);
+    
+    $results = $stmt->execute();
+    
+    if($results){
+        $row = $stmt->fetch();
+        $count = $row[0];
+        return $count;
+    }else{
+        die("Erro fetching posts! " . $conn->errorInfo()[0]);
+    }
+    
+}
+
+//echo getCount("admins");
 //isUsernameTaken("gui");
 
 //postComment("gui", "guigrg@gmail.com","asdasd asda sdasd a", 2);

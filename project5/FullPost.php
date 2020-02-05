@@ -74,6 +74,7 @@ if(isset($_POST['submit_comment'])){
                 $id = htmlentities($post['id']);
                 $title = htmlentities($post['title']);
                 $author_id = htmlentities($post['author_id']);
+                $author_name = htmlentities($post['author_name']);
                 $cat_name = htmlentities($post['cat_name']);
                 $image = htmlentities($post['image']);
                 $time = htmlentities($post['time']);
@@ -95,8 +96,8 @@ if(isset($_POST['submit_comment'])){
                       <img src="uploads/<?php echo $image; ?>" alt="" class="img-fluid card-img-top" style="max-height: 450px;">
                        <div class="card-body">
                            <h4 class="card-title"><?php echo $title; ?></h4>
-                           <small class="text-muted">Written by <?php echo $author_id; ?> On <?php echo $time; ?></small>
-                           <small style="float: right;" class="badge badge-dark text-light">Comments 20</small>
+                           <small class="text-muted">Category: <span class="text-dark"><?php echo $cat_name; ?></span> Written by <span class="text-dark"><?php echo $author_name; ?></span> On <?php echo $time; ?></small>
+<!--                           <small style="float: right;" class="badge badge-dark text-light">Comments 20</small>-->
                            <hr>
                            <p class="card-text"><?php echo $content; ?></p>
                        </div>
@@ -192,9 +193,10 @@ if(isset($_POST['submit_comment'])){
                
                
            </div>
-           <div class="col-sm-4"  style="min-height:40px; background:yellow;">
-               
-           </div>
+                      
+  <?php include "sidebar.php"; ?>
+      
+      
        </div>
        
    </div>

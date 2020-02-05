@@ -44,7 +44,7 @@
     </thead>
     <tbody>
         <?php
-            $posts = getPosts();
+            $posts = getPosts(null,null);
             foreach($posts as $key=>$value){
                 $post = $value;
                 $id = $post['id'];
@@ -53,6 +53,9 @@
                 $cat_name = $post['cat_name'];
                 $image = $post['image'];
                 $time = $post['time'];
+                
+                $ok_comments=$post['ok_comments'];
+                $not_ok_comments=$post['not_ok_comments'];
                 
                 if(strlen($title)>18)
                     $title = substr($title,0,18)."..";
@@ -72,7 +75,7 @@
                 echo "<td  class='table-success'>$cat_name</td>";
                 echo "<td><img src='uploads/$image' width='120px'></td>";
                 echo "<td>$time</td>";
-                echo "<td>Comments</td>";
+                echo "<td>". ($ok_comments>0?"<span class='badge badge-success '>$ok_comments</span>":"").($not_ok_comments>0?"<span class='badge badge-danger'>$not_ok_comments</span>":"")."</td>";
                 echo "<td><a href='EditPost.php?id=$id' class='btn btn-warning btn-sm  mr-1'>Edit</a><a href='DeletePost.php?id=$id' class='btn btn-danger btn-sm'>Delete</a></td>";
                 echo "<td><a href='FullPost.php?id=$id' target='_blank' class='btn btn-primary btn-sm'>Live View</td>";
                 echo "</tr>";
