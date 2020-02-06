@@ -47,7 +47,7 @@ function getPosts($index,$amount){
     else
         $pagination = " LIMIT $index, $amount";
     
-    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id LEFT JOIN admins adn ON p.author_id=adn.id  ORDER BY id DESC " .$pagination );
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.category_id, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id LEFT JOIN admins adn ON p.author_id=adn.id  ORDER BY id DESC " .$pagination );
     $results = $stmt->execute();
     if($results){
         $count = 0;
@@ -79,7 +79,7 @@ function getPostsByCategory($cat_id, $index,$amount){
     else
         $pagination = " LIMIT $index, $amount";
     
-    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id LEFT JOIN admins adn ON p.author_id=adn.id WHERE p.category_id=:cat_id ORDER BY id DESC " .$pagination );
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.category_id, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id LEFT JOIN admins adn ON p.author_id=adn.id WHERE p.category_id=:cat_id ORDER BY id DESC " .$pagination );
     $stmt->bindValue("cat_id",$cat_id);
     $results = $stmt->execute();
     if($results){
@@ -110,7 +110,7 @@ function getPostsByCategory($cat_id, $index,$amount){
 function getTopFivePosts(){
     
     global $conn;
-    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.category_id, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
     LEFT JOIN admins adn ON p.author_id=adn.id 
     ORDER BY id DESC LIMIT 0, 5");
     $results = $stmt->execute();
@@ -144,7 +144,7 @@ function searchPosts($query, $index,$amount){
     else
         $pagination = " LIMIT $index, $amount";
     
-    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.category_id, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
     LEFT JOIN admins adn ON p.author_id=adn.id WHERE p.title LIKE :search OR p.content LIKE :search OR cat.name LIKE :search ORDER BY id DESC " . $pagination);
     
     $query = "%".$query."%";
@@ -214,7 +214,7 @@ function getPostCountByCategory($cat_id){
 function getPostById($id){
     
     global $conn;
-    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
+    $stmt = $conn->prepare("SELECT p.id, p.title, p.author_id, adn.username as author_name, cat.name as cat_name, p.category_id, p.time, p.image, p.content, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='on') as ok_comments, (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND status='off') as not_ok_comments FROM posts p LEFT JOIN category cat ON p.category_id=cat.id 
     LEFT JOIN admins adn ON p.author_id=adn.id WHERE p.id=:id ORDER BY id DESC");
     $stmt->bindValue("id",$id);
     $results = $stmt->execute();
@@ -437,6 +437,28 @@ function getAdminByUsername($username){
     
     $stmt = $conn->prepare($query);
     $stmt->bindValue("username", $username);
+    
+    $results = $stmt->execute();
+    $count = $stmt->rowCount();
+    if($results){
+        if($count == 0)
+            return null;
+        
+        $row = $stmt->fetch();
+        return $row;
+        
+    }else{
+        die("Error fetching admins! " . $conn->errorInfo()[0]);
+    }
+        
+}
+
+function getAdminById($id){
+    global $conn;
+    $query = "SELECT * FROM admins WHERE id=:id";
+    
+    $stmt = $conn->prepare($query);
+    $stmt->bindValue("id", $id);
     
     $results = $stmt->execute();
     $count = $stmt->rowCount();

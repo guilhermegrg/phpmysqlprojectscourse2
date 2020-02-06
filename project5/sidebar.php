@@ -1,4 +1,4 @@
-         <div class="col-sm-4"  style="min-height:40px; background:yellow;">
+         <div class="col-sm-4"  style="min-height:40px;">
            
             <div class="card mt-4">
                 <div class="card-body">

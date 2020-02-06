@@ -76,6 +76,7 @@ if(isset($_POST['submit_comment'])){
                 $author_id = htmlentities($post['author_id']);
                 $author_name = htmlentities($post['author_name']);
                 $cat_name = htmlentities($post['cat_name']);
+                $cat_id = htmlentities($post['category_id']);
                 $image = htmlentities($post['image']);
                 $time = htmlentities($post['time']);
                 $content = htmlentities($post['content']);
@@ -96,7 +97,7 @@ if(isset($_POST['submit_comment'])){
                       <img src="uploads/<?php echo $image; ?>" alt="" class="img-fluid card-img-top" style="max-height: 450px;">
                        <div class="card-body">
                            <h4 class="card-title"><?php echo $title; ?></h4>
-                           <small class="text-muted">Category: <span class="text-dark"><?php echo $cat_name; ?></span> Written by <span class="text-dark"><?php echo $author_name; ?></span> On <?php echo $time; ?></small>
+                           <small class="text-muted">Category: <a href="blog.php?category=<?php echo $cat_id; ?>"><span class="text-dark"><?php echo $cat_name; ?></span></a> Written by <a href="Profile.php?id=<?php echo $author_id; ?>"><span class="text-dark"><?php echo $author_name; ?></span></a> On <?php echo $time; ?></small>
 <!--                           <small style="float: right;" class="badge badge-dark text-light">Comments 20</small>-->
                            <hr>
                            <p class="card-text"><?php echo $content; ?></p>
