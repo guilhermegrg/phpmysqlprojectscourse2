@@ -23,8 +23,8 @@ class Bootstrap{
             $this->action = $this->request['action'];
         }
         
-        echo $this->controller. "<br>";
-        echo $this->action. "<br>";
+//        echo $this->controller. "<br>";
+//        echo $this->action. "<br>";
     }
     
     
