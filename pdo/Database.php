@@ -1,8 +1,8 @@
 <?php
 
-define("DSN", "mysql:host=localhost;dbname=library");
-define("USERNAME", "task");
-define("PASSWORD", "testing");
+define("DSN", "mysql:host=localhost;dbname=test3");
+define("USERNAME", "root");
+define("PASSWORD", "");
 
 $options = array(PDO::ATTR_PERSISTENT => true);
 

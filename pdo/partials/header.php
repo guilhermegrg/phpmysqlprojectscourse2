@@ -45,4 +45,5 @@
 </div>
 
 <!-- App Alert-->
-<div id="ajax_msg" class="alert alert-success"></div>
+    <div id="ajax_msg" class="alert alert-success">
+    </div>
